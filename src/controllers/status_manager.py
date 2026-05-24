@@ -22,7 +22,7 @@ class StatusBarManager:
         self.timer.timeout.connect(self._clear_message)
         self.default_message = "Prêt"
         self.status_map = {
-            CalculStatus.IDLE: ("Prêt", QColor(100, 200, 100)),
+            CalculStatus.IDLE: ("Prêt", QColor(34, 139, 34)),
             CalculStatus.CALCULATING: ("Calcul en cours...", QColor(255, 165, 0)),
             CalculStatus.SUCCESS: ("✓ Calcul réussi", QColor(34, 139, 34)),
             CalculStatus.WARNING: ("⚠ Attention ", QColor(217, 119, 6)),
@@ -37,7 +37,7 @@ class StatusBarManager:
         status_text, color = self.status_map.get(status, (status.value, QColor(128, 128, 128)))
         
         if message:
-            display_text = f"{status_text} - {message}"
+            display_text = f"{status_text} | {message}"
         else:
             display_text = status_text
         

@@ -272,11 +272,10 @@ class GraphicsConfig:
 # Configuration de l'application globale
 APP_CONFIG = {
     'app_name': 'Kajizmo',
-    'app_version': '2.0',
-    'app_subtitle': 'Outil de calcul BAEL pour poutres en béton armé',
-    'organization': 'Kajizmo',
+    'app_version': '0.9.0',
+    'app_subtitle': 'Outil de calcul BAEL pour poutres en béton armé - BAEL 91 mod. 99',
     'enable_logging': True,
-    'log_level': 'INFO',
+    'log_level': 'DEBUG',
 }
 
 

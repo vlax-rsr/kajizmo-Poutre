@@ -32,22 +32,24 @@ def resource_path(relative_path):
 def setup_logging():
     """Configure le système de logging."""
     log_level = logging.INFO if APP_CONFIG['log_level'] == 'INFO' else logging.DEBUG
+
+    if sys.platform == "win32":
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
     
     logging.basicConfig(
         level=log_level,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler('kajizmo.log'),
-            logging.StreamHandler()
+            logging.FileHandler('kajizmo.log', encoding='utf-8'),
+            logging.StreamHandler(sys.stdout)
         ]
     )
     
     return logging.getLogger(__name__)
 
-
 def load_stylesheet():
     """Charge et retourne la feuille de style CSS."""
-    # CORRECTION ICI
     stylesheet_path = resource_path(os.path.join("assets", "styles", "stylesheet_enhanced.css"))
     
     if os.path.exists(stylesheet_path):
@@ -57,11 +59,9 @@ def load_stylesheet():
         logger.warning(f"Stylesheet non trouvé: {stylesheet_path}")
         return ""
 
-
 def show_splash_screen(app):
     """Affiche un écran de démarrage (splash screen) optionnel."""
     try:
-        # CORRECTION ICI
         splash_path = resource_path(os.path.join("assets", "icons", "splash.png"))
         
         if os.path.exists(splash_path):
@@ -70,7 +70,6 @@ def show_splash_screen(app):
             splash.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
             splash.show()
             
-            # Message de chargement
             splash.showMessage(
                 f"Initialisation de {APP_CONFIG['app_name']} v{APP_CONFIG['app_version']}...",
                 Qt.AlignBottom | Qt.AlignCenter,
@@ -87,14 +86,12 @@ def show_splash_screen(app):
 
 def main():
     """Point d'entrée principal de l'application."""
-    
     # Créer l'application
     app = QApplication(sys.argv)
     
     # Configuration de l'application
     app.setApplicationName(APP_CONFIG['app_name'])
     app.setApplicationVersion(APP_CONFIG['app_version'])
-    app.setOrganizationName(APP_CONFIG['organization'])
     
     # Logging
     global logger
