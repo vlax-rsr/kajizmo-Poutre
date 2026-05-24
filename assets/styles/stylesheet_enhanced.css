@@ -1,0 +1,258 @@
+/* ============================================================================
+   KAJIZMO - Stylesheet Amélioré (Version Corrigée)
+   Design moderne avec couleurs professionnelles et typographie cohérente
+   ============================================================================ */
+
+/* VARIABLE DE COULEUR PRINCIPALE POUR UN UNIFICATION MAXIMALE */
+QWidget {
+    font-family: "Inter", "Segoe UI", "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    color: #1F2937;
+    background-color: transparent;
+}
+
+/* ============================================================================
+   FENÊTRES ET CONTAINERS DE BASE
+   ============================================================================ */
+
+QMainWindow, QDialog {
+    background-color: #F5F7FA;
+}
+
+/* ============================================================================
+   GROUPBOX - Conteneurs principaux avec titres améliorés
+   ============================================================================ */
+
+QGroupBox {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    margin-top: 20px;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #0F172A;
+}
+
+QGroupBox:hover {
+    border: 1px solid #CBD5E1;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    left: 12px;
+    top: 5px;
+    padding: 0px 8px;
+    background-color: #FFFFFF;
+    color: #0F172A;
+}
+
+/* ============================================================================
+   LABELS - Texte et étiquettes
+   ============================================================================ */
+
+QLabel {
+    color: #334155;
+    font-size: 13px;
+    padding: 2px 0px;
+    background-color: transparent;
+}
+
+QLabel.TitreResultat {
+    color: #0F172A;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 0px;
+}
+
+QLabel.Unite {
+    color: #94A3B8;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+QLabel#LabelValide, QLabel#ResultatValide, .SuccessText {
+    color: #16A34A;
+    font-weight: 600;
+}
+
+QLabel#LabelErreur, QLabel#ResultatErreur, .ErrorText {
+    color: #DC2626;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   CHAMPS D'ENTRÉE ET DE RÉSULTAT
+   ============================================================================ */
+
+QLineEdit, QPlainTextEdit, QSpinBox, QDoubleSpinBox, QTextEdit, QTextBrowser, QComboBox {
+    background-color: #FFFFFF;
+    color: #1F2937;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: "Inter", "Segoe UI", monospace;
+    font-size: 13px;
+    selection-background-color: #DBEAFE;
+    selection-color: #1E293B;
+}
+
+QLineEdit:hover, QPlainTextEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover, QTextEdit:hover, QTextBrowser:hover, QComboBox:hover {
+    border: 1.5px solid #CBD5E1;
+    background-color: #F8FAFC;
+}
+
+QLineEdit:focus, QPlainTextEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QTextEdit:focus, QTextBrowser:focus, QComboBox:focus, QComboBox:on {
+    border: 2px solid #3B82F6;
+    background-color: #F8FAFC;
+    padding: 7px 11px;
+}
+
+QLineEdit:disabled, QPlainTextEdit:disabled, QSpinBox:disabled, QDoubleSpinBox:disabled, QTextEdit:disabled, QTextBrowser:disabled, QComboBox:disabled {
+    background-color: #F1F5F9;
+    color: #94A3B8;
+    border: 1px solid #E2E8F0;
+}
+
+/* ============================================================================
+   SPINBOX - BOUTONS ET FLÈCHES GARDÉS ET CORRIGÉS
+   ============================================================================ */
+
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    width: 18px;
+    border-left: 1px solid #CBD5E1;
+    border-bottom: 1px solid #E2E8F0;
+    background-color: #F8FAFC;
+    border-top-right-radius: 6px;
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover {
+    background-color: #E2E8F0;
+}
+
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    width: 18px;
+    border-left: 1px solid #CBD5E1;
+    background-color: #F8FAFC;
+    border-bottom-right-radius: 6px;
+}
+
+QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #E2E8F0;
+}
+
+/* Conservation de tes icônes d'origine pour les flèches haut/bas */
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
+    image: url("assets/icons/spin_up.svg");
+    width: 8px;
+    height: 6px;
+}
+
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
+    image: url("assets/icons/spin_down.svg");
+    width: 8px;
+    height: 6px;
+}
+
+/* ============================================================================
+   COMBOBOX
+   ============================================================================ */
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #E2E8F0;
+}
+
+QComboBox::down-arrow {
+    image: url("assets/icons/spin_down.svg"); /* Réutilisation de ton icône descendante */
+    width: 8px;
+    height: 6px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #FFFFFF;
+    color: #1F2937;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    selection-background-color: #DBEAFE;
+    selection-color: #1E40AF;
+    outline: none;
+    padding: 4px;
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+
+QPushButton {
+    background-color: #F1F5F9;
+    color: #1F2937;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 500;
+    outline: none;
+}
+
+QPushButton:hover {
+    background-color: #E2E8F0;
+    border: 1.5px solid #CBD5E1;
+}
+
+QPushButton:pressed {
+    background-color: #CBD5E1;
+}
+
+/* Style appliqué aux boutons intérieurs (ex: "Armatures longitudinales") */
+QGroupBox QPushButton {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border: none;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 12px 20px;
+    min-height: 40px;
+}
+
+QGroupBox QPushButton:hover {
+    background-color: #2563EB;
+}
+
+QPushButton#ExportXLSX, QPushButton#ExportTXT {
+    background-color: #FFFFFF;
+    color: #475569;
+    border: 1.5px solid #CBD5E1;
+}
+
+QPushButton#ExportXLSX:hover, QPushButton#ExportTXT:hover {
+    background-color: #F1F5F9;
+    border: 1.5px solid #94A3B8;
+}
+
+QPushButton.ResetButton {
+    background-color: #F8FAFC;
+    color: #DC2626;
+    border: 1.5px solid #FECACA;
+}
+
+QPushButton.ResetButton:hover {
+    background-color: #FEE2E2;
+}
+
+/* ============================================================================
+   BARRE DE STATUT
+   ============================================================================ */
+
+QStatusBar {
+    background-color: #FFFFFF;
+    color: #475569;
+    border-top: 1px solid #E2E8F0;
+    padding: 6px 12px;
+}
