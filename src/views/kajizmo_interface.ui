@@ -4093,7 +4093,7 @@ TRANSVERSALES</string>
           <item row="1" column="1">
            <widget class="QSpinBox" name="spin_nb_4">
             <property name="value">
-             <number>4</number>
+             <number>6</number>
             </property>
            </widget>
           </item>

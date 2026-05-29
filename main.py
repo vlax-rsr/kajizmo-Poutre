@@ -34,15 +34,23 @@ def setup_logging():
     log_level = logging.INFO if APP_CONFIG['log_level'] == 'INFO' else logging.DEBUG
 
     if sys.platform == "win32":
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
+        for stream_name in ("stdout", "stderr"):
+            stream = getattr(sys, stream_name, None)
+            if stream is not None and hasattr(stream, "reconfigure"):
+                stream.reconfigure(encoding='utf-8')
     
+    log_stream = (
+        getattr(sys, "stdout", None)
+        or getattr(sys, "__stdout__", None)
+        or getattr(sys, "stderr", None)
+        or getattr(sys, "__stderr__", None)
+    )
     logging.basicConfig(
         level=log_level,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.FileHandler('kajizmo.log', encoding='utf-8'),
-            logging.StreamHandler(sys.stdout)
+            logging.StreamHandler(log_stream)
         ]
     )
     

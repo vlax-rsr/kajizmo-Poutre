@@ -14,6 +14,19 @@ from src.models.formatting import *
 logger = logging.getLogger(__name__)
 
 
+def _flatten_report_lines(items):
+    """Aplati récursivement les lignes du rapport en chaînes de caractères."""
+    flattened = []
+    for item in items:
+        if item is None:
+            continue
+        if isinstance(item, (list, tuple)):
+            flattened.extend(_flatten_report_lines(item))
+        else:
+            flattened.append(str(item))
+    return flattened
+
+
 class CalculationCoordinator:
     """Coordonne tous les calculs du moteur BAEL."""
     
@@ -190,6 +203,7 @@ class CalculationCoordinator:
 
             lignes_rapport.extend(afficher_resume(self.poutre_actuelle))
             lignes_rapport.extend(afficher_result_long(self.poutre_actuelle))
+            lignes_rapport.extend(afficher_result_cisaillement(self.poutre_actuelle))
             
             if self.compositions:
                 lignes_rapport.extend(afficher_choix(self.poutre_actuelle, self.compositions))
@@ -199,6 +213,7 @@ class CalculationCoordinator:
                 lignes_rapport.append(afficher_repartition_arm_trans(self.poutre_actuelle, nb_brins, phi_t))
             
             lignes_rapport.extend(afficher_result_fleche(self.poutre_actuelle))
+            lignes_rapport = _flatten_report_lines(lignes_rapport)
             
             with open(chemin_fichier, "w", encoding="utf-8") as fichier:
                 fichier.write("\n".join(lignes_rapport))
