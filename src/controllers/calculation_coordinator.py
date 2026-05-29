@@ -8,6 +8,8 @@ from typing import Optional, Dict, Any
 from src.models.engine import Poutre
 from src.models.exceptions import BaelError, SectionDepasseeError
 from src.utils import safe_float
+from src.models.formatting import *
+
 
 logger = logging.getLogger(__name__)
 
@@ -162,12 +164,7 @@ class CalculationCoordinator:
             raise
     
     def get_diametres_arm_trans(self) -> list:
-        """
-        Retourne les diamètres admissibles pour les armatures transversales.
-        
-        Returns:
-            Liste des diamètres possibles
-        """
+        """Retourne les diamètres admissibles pour les armatures transversales."""
         if not self.poutre_actuelle or not self.phi_l_min_mm:
             logger.debug("Pas de diamètres transversaux disponibles (poutre non calculée)")
             return []
@@ -179,6 +176,42 @@ class CalculationCoordinator:
         except Exception as e:
             logger.error(f"Erreur détermination diamètres transversaux: {e}", exc_info=True)
             return []
+        
+    def export_txt(self, chemin_fichier: str, phi_t: int = 0, nb_brins: int = 0) -> bool:
+        """Génère un rapport technique complet au format TXT et l'enregistre sur le disque."""
+        if not self.poutre_actuelle:
+            logger.error("Export impossible : aucune poutre n'a été calculée.")
+            raise ValueError("Aucune poutre n'est disponible pour l'export.")
+
+        logger.info(f"Début de la génération de l'export TXT vers : {chemin_fichier}")
+        
+        try:
+            lignes_rapport = []
+
+            lignes_rapport.extend(afficher_resume(self.poutre_actuelle))
+            lignes_rapport.extend(afficher_result_long(self.poutre_actuelle))
+            
+            if self.compositions:
+                lignes_rapport.extend(afficher_choix(self.poutre_actuelle, self.compositions))
+            
+            if phi_t > 0 and nb_brins > 0:
+                lignes_rapport.extend(afficher_result_trans(self.poutre_actuelle, phi_t, nb_brins))
+                lignes_rapport.append(afficher_repartition_arm_trans(self.poutre_actuelle, nb_brins, phi_t))
+            
+            lignes_rapport.extend(afficher_result_fleche(self.poutre_actuelle))
+            
+            with open(chemin_fichier, "w", encoding="utf-8") as fichier:
+                fichier.write("\n".join(lignes_rapport))
+                
+            logger.info(f"✓ Rapport technique exporté avec succès ({len(lignes_rapport)} lignes écrites).")
+            return True
+            
+        except IOError as e:
+            logger.error(f"Erreur d'écriture disque lors de l'export TXT : {e}", exc_info=True)
+            raise
+        except Exception as e:
+            logger.error(f"Erreur inattendue lors de la génération de l'export : {e}", exc_info=True)
+            raise
     
     def reinitialiser(self):
         """Réinitialise l'état du coordinateur."""

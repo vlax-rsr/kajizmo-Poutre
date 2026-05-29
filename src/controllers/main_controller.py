@@ -5,7 +5,7 @@ Orchestration claire des différentes couches.
 
 import logging
 from PySide6.QtWidgets import QLineEdit, QComboBox, QSpinBox, QLabel, QTextBrowser
-
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 from src.views.main_view import MainView
 from src.views.console_view import qtext_long, qtext_trans, qtext_fleche
@@ -106,6 +106,8 @@ class MainController:
             self.ui.b_armLong.clicked.connect(self.calculer_section_theorique)
         if self.ui.b_armTrans:
             self.ui.b_armTrans.clicked.connect(self.calculer_armature_transversale)
+        if self.ui.b_export:
+            self.ui.b_export.clicked.connect(self.action_export_txt)
         if self.ui.b_reset:
             self.ui.b_reset.clicked.connect(self._reset)
         
@@ -115,9 +117,10 @@ class MainController:
                 widget.textChanged.connect(lambda t, w=widget: self._on_input_after_warning(w))
                 widget.textChanged.connect(lambda t, w=widget: self._on_input_changed(w))
         
-        for widget in self.combo_widgets.values():
-            if widget:
-                widget.currentTextChanged.connect(lambda t, w=widget: self._on_input_changed(w))
+        for entry_widget in [self.combo_widgets['fc28'], self.combo_widgets['fe'], self.combo_widgets['fis']]:
+            if entry_widget:
+                entry_widget.currentTextChanged.connect(lambda t, w=entry_widget: self._on_input_after_warning(w))
+                entry_widget.currentTextChanged.connect(lambda t, w=entry_widget: self._on_input_changed(w))
         
         # Recalcul instantané de la section réelle
         for nb_widget in [self.spin_widgets['nb_1'], self.spin_widgets['nb_2'], self.spin_widgets['nb_3']]:
@@ -141,12 +144,16 @@ class MainController:
         if isinstance(widget, QLineEdit) and not widget.text().strip():
             return
         
+        if isinstance(widget, QComboBox) and not widget.currentText().strip():
+            return
+        
         UIUpdater.apply_warning_style(widget)
         self.status_manager.set_status(
             CalculStatus.WARNING,
             "Valeurs modifiées - recalculez",
             duration_ms=5000
         )
+
         logger.debug(f"Input modifié: {widget.objectName()}")
 
     def _on_input_after_warning(self, widget):
@@ -309,18 +316,30 @@ class MainController:
         """Met à jour la section réelle d'armature longitudinale."""
         try:
             if not self.calc_coordinator.poutre_actuelle:
-                logger.debug("Mise à jour non effectuée - pas de section réelle calculée")
                 return
             
             logger.debug("Mise à jour de la section réelle...")
             
             # Récupérer les compositions
+            nb1 = int(self.spin_widgets['nb_1'].value() or 0)
+            nb2 = int(self.spin_widgets['nb_2'].value() or 0)
+            nb3 = int(self.spin_widgets['nb_3'].value() or 0)
+            
+            if nb1 == 0 and nb2 == 0 and nb3 == 0:
+                if self.result_labels['areel']:
+                    self.result_labels['areel'].setText("Non calculée")
+                if self.result_labels['valid']:
+                    self.result_labels['valid'].hide()
+                logger.debug("Mise à jour inutile.")
+                return
+
             compositions = [
                 (int(self.spin_widgets['nb_1'].value() or 0), safe_float(self.combo_widgets['phi_1'].currentText() or "0")),
                 (int(self.spin_widgets['nb_2'].value() or 0), safe_float(self.combo_widgets['phi_2'].currentText() or "0")),
                 (int(self.spin_widgets['nb_3'].value() or 0), safe_float(self.combo_widgets['phi_3'].currentText() or "0")),
             ]
             
+
             # Mettre à jour via le coordinateur
             a_reel = self.calc_coordinator.mettre_a_jour_compositions(compositions)
             
@@ -427,6 +446,74 @@ class MainController:
             logger.error(f"✗ Erreur calcul transversal: {e}", exc_info=True)
             self.status_manager.set_status(CalculStatus.ERROR, str(e))
     
+    # ==================== BOUTON EXPORT ====================
+
+    def action_export_txt(self):
+        """Méthode de slot liée au bouton d'export dans le contrôleur."""
+        # Sécurité : récupération du vrai widget QMainWindow/QWidget de l'interface
+        parent_widget = None
+        if hasattr(self, 'view') and hasattr(self.view, 'ui'):
+            parent_widget = self.view.ui
+        elif hasattr(self, 'ui'):
+            parent_widget = self.ui
+
+        # 1. Ouvrir l'explorateur natif pour choisir l'emplacement du fichier
+        chemin, _ = QFileDialog.getSaveFileName(
+            parent_widget,                     
+            "Enregistrer le rapport technique",
+            "Note_de_calcul_poutre_BAEL.txt",
+            "Fichiers Texte (*.txt)"
+        )
+        
+        # Si l'utilisateur clique sur "Annuler" ou ferme la fenêtre
+        if not chemin:
+            logger.info("Export TXT annulé par l'utilisateur.")
+            return
+            
+        try:
+            # 2. Récupération dynamique des paramètres transversaux actuels
+            phi_t = 0
+            nb_brins = 0
+            
+            # Récupération sécurisée du diamètre transversal (ex: cb_phi_4 ou phi_4 dans vos caches)
+            combo_phi = self.combo_widgets.get('phi_4') or self.combo_widgets.get('cb_phi_4')
+            if combo_phi:
+                try:
+                    phi_t = int(combo_phi.currentText())
+                except ValueError:
+                    phi_t = 0
+                    
+            # Récupération sécurisée du nombre de brins (ex: spin_nb_4 ou nb_4)
+            spin_nb = self.spin_widgets.get('nb_4') or self.spin_widgets.get('spin_nb_4')
+            if spin_nb:
+                nb_brins = spin_nb.value()
+
+            # 3. Exécution du traitement de génération de fichier via le Coordinateur
+            self.calc_coordinator.export_txt(
+                chemin_fichier=chemin,
+                phi_t=phi_t,
+                nb_brins=nb_brins
+            )
+            
+            # 4. Message visuel de succès pour l'utilisateur
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.information(
+                parent_widget, 
+                "Export Réussi", 
+                "La note de calcul technique BAEL a été enregistrée avec succès !"
+            )
+            self.status_manager.set_status(CalculStatus.SUCCESS, "Export TXT réussi")
+            
+        except Exception as e:
+            logger.error(f"Échec de l'action d'exportation TXT : {e}", exc_info=True)
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.critical(
+                parent_widget, 
+                "Erreur d'Export", 
+                f"Impossible d'exporter la note de calcul :\n{str(e)}"
+            )
+            self.status_manager.set_status(CalculStatus.ERROR, "Échec de l'export")
+
     # ==================== RÉINITIALISATION ====================
     
     def _reset(self):
@@ -459,7 +546,7 @@ class MainController:
         
         for phi_key in ['phi_1', 'phi_2', 'phi_3']:
             if self.combo_widgets[phi_key]:
-                self.combo_widgets[phi_key].setCurrentIndex(1 if phi_key != 'phi_3' else 0)
+                self.combo_widgets[phi_key].setCurrentIndex(1)
         
         # 6. Réinitialiser les styles
         UIUpdater.reset_all_input_styles(list(self.input_widgets.values()))
