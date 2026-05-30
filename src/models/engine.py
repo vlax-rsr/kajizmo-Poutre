@@ -9,6 +9,9 @@ from .exceptions import *
 from .cisaillement import *
 from .transversal import *
 from .fleche import *
+from .charge import sollicitations
+from .formatting import afficher_resume
+
 
 """Moteur BAEL pour calculer les armatures longitudinales et transversales."""
 
@@ -22,9 +25,9 @@ class Poutre:
     fc28_MPa: float
     fe_MPa: float
     fis: str
-    M_u_kNm: float
-    M_ser_kNm: float
-    V_u_kN: float
+    M_u_kNm: float = 0.00
+    M_ser_kNm: float = 0.00
+    V_u_kN: float = 0.00
     type_barre: str = "HA"
 
     b_m: float = field(init=False)
@@ -57,6 +60,7 @@ class Poutre:
     def __post_init__(self) -> None:
         """Initialise les parametres derives a partir des donnees d'entree."""
         self._calculer_parametres_derives()
+
 
     def _calculer_parametres_derives(self) -> None:
         """Calcule les grandeurs intermediaires utilisees par les methodes."""
@@ -98,6 +102,7 @@ class Poutre:
 
         self.tau_u_MPa = self.V_u_MN / (self.b_m * self.h_m)
 
+
     def _calculer_contrainte_acier_els(self) -> float:
         """Calcule la contrainte admissible des aciers a l'ELS."""
         coef_fiss = COEF_FISSURATION.get(self.type_barre, COEF_FISSURATION["HA"])
@@ -114,15 +119,18 @@ class Poutre:
         }
         return round(limites_sigma_st.get(self.fis, limites_sigma_st["FP"]), 2)
 
+
     def calculer_ferraillage_longitudinal(self) -> dict:
         """Retourne la section longitudinale finale"""
         self.A_t_final_cm2 = calculer_ferraillage_longitudinal(self)["A_t_final_cm2"]
         self.A_c_final_cm2 = calculer_ferraillage_longitudinal(self)["A_c_final_cm2"]
         return calculer_ferraillage_longitudinal(self)
     
+
     def verifier_cisaillement(self) -> dict:
         """Verifie la contrainte de cisaillement."""
         return verifier_cisaillement(self)
+
 
     @staticmethod
     def calculer_section_reelle(compositions: list[tuple[int, float]]) -> float:
@@ -133,6 +141,7 @@ class Poutre:
             section += nb_barres * SECTIONS_HA[phi] / CM2_TO_MM2
         return round(section, 2)
 
+
     def diametre_possible_arm_trans(self, phi_l_min_mm: float) -> list[int]:
         """Retourne les diametres transversaux admissibles pour la poutre."""
         diam_max = min(
@@ -140,14 +149,20 @@ class Poutre:
         )
         return [x for x in DIAMETRES if x <= diam_max]
 
+
     def calculer_ferraillage_transversale(self, nb_brin: int, phi_t: int, ) -> dict:
         """Retourne l'armature transversale et sa disposition'"""
         return calculer_ferraillage_transversale(self, nb_brin, phi_t)
     
+
     def verifier_fleche(self) -> bool:
         """Verifie la contrainte de fleche."""
         return verifier_fleche(self)
 
-    def __str__(self) -> str:
-        """Retourne la representation texte de l'objet poutre."""
-        return self.afficher_resume()
+
+    def sollicitations(self, G_kN_m: float, Q_kN_m: float):
+        eff_interne = sollicitations(G_kN_m, Q_kN_m, self.l_m)
+        self.M_u_kNm = eff_interne["M_u"]
+        self.M_ser_kNm = eff_interne["M_ser"]
+        self.V_u_kN = eff_interne["V_u"]
+        return eff_interne
