@@ -1,5 +1,9 @@
-﻿PySide6>=6.7,<7
-
-# Outils de développement / distribution
-pyinstaller>=6.0
-ruff>=0.6
+﻿# KAJIZMO — POUTRE
+# Dépendances Python — BAEL beam design application
+# Généré pour Python 3.10+
+ 
+# Interface graphique
+PySide6>=6.5.0
+ 
+# Compilation en exécutable (optionnel)
+pyinstaller>=6.0.0

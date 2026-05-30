@@ -563,7 +563,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <item row="1" column="1">
            <widget class="QSpinBox" name="spin_nb_2">
             <property name="value">
-             <number>3</number>
+             <number>0</number>
             </property>
            </widget>
           </item>
@@ -597,7 +597,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              </size>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>1</number>
             </property>
             <item>
              <property name="text">
@@ -713,7 +713,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <item row="0" column="1">
            <widget class="QSpinBox" name="spin_nb_1">
             <property name="value">
-             <number>3</number>
+             <number>0</number>
             </property>
            </widget>
           </item>
@@ -739,7 +739,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              </size>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <item>
              <property name="text">
@@ -1354,7 +1354,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>25</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -1813,7 +1813,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>6.93</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -2272,7 +2272,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>60</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -2999,7 +2999,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>154</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -3464,7 +3464,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>163</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -3958,7 +3958,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>113</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -3990,7 +3990,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <item row="0" column="2">
      <widget class="QGroupBox" name="groupBox_3">
       <property name="title">
-       <string>ARMATURE TRANSVERSALE</string>
+       <string>ARMATURES TRANSVERSALES</string>
       </property>
       <property name="class" stdset="0">
        <string>Section</string>
@@ -4093,7 +4093,7 @@ TRANSVERSALES</string>
           <item row="1" column="1">
            <widget class="QSpinBox" name="spin_nb_4">
             <property name="value">
-             <number>6</number>
+             <number>0</number>
             </property>
            </widget>
           </item>

@@ -1,6 +1,6 @@
 # main.py
 """
-main.py - Point d'entrée de l'application Kajizmo Enhanced
+main.py - Point d'entrée de l'application Kajizmo
 Intègre tous les modules améliorés: statusbar, style moderne
 """
 
